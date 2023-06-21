@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { SupabaseService } from 'src/supabase/supabase.service';
-import { RegisterDto } from 'src/auth/auth.dto';
+import { LoginDto, RegisterDto } from 'src/auth/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,5 +14,21 @@ export class AuthService {
             password: body.password,
             phone: body.contactNumber,
         })
+    }
+
+    async login(body: LoginDto){
+        const {data, error} = await this.supabaseService.client.auth.signInWithPassword({
+            ...body
+        })
+
+        if(error)
+            throw new HttpException(error.message, error.status)
+
+        const accessToken = data.session.access_token
+
+        return {
+            user: data.user,
+            accessToken
+        }
     }
 }
