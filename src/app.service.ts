@@ -4,14 +4,14 @@ import { SupabaseClient } from '@supabase/supabase-js';
 @Injectable()
 export class AppService {
   constructor(
-    @Inject('SUPABASE_CLIENT')
-    private readonly supabaseClient: SupabaseClient
+    // @Inject('SUPABASE_CLIENT')
+    // private readonly supabaseClient: SupabaseClient
   ){}
   async getHello() {
-    const user = await this.supabaseClient.from('users').select('*');
+    // const user = await this.supabaseClient.from('users').select('*');
 
     return {
-      user,
+      // user,
       message:'Hello World! Welcome to To Do demo.'
     };
   }
