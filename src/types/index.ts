@@ -10,3 +10,5 @@ export interface FailResponse {
 export interface HttpFailResponse {
     readonly error: FailResponse;
 }
+
+export type JwtPayload = Record<string, any>
