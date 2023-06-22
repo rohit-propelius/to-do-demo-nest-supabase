@@ -1,6 +1,6 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtPayload } from 'src/types';
 import { SupabaseService } from 'src/supabase/supabase.service';
 import { Request } from 'express';
@@ -13,27 +13,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
+      passReqToCallback: true
     });
   }
 
-  async validate(payload: JwtPayload) {
-    const { email, sub: userUId } = payload
-    console.log(payload)
-    const user = await this.supabaseService.client
-        .auth
-        .admin
-        .getUserById(userUId)
-        // .from('users')
-        // .select('*')
-        // .eq('id', userUId)
-        // .eq('email', email)
-        // .single()
-        
-    console.log('user :: :: :: :: :: :: ')
-    console.log(user)
+  async validate(req: Request, payload: JwtPayload) {
+    const token = req.headers.authorization.split(' ')[1]
+    const {data: user, error} = await this.supabaseService.client.auth.getUser(token)
 
-    // if (!user) {}
+    if(error)
+      throw new UnauthorizedException()
 
-    return user;
+    return user
   }
 }
