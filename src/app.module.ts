@@ -29,11 +29,6 @@ import { SupabaseModule } from './supabase/supabase.module';
     { provide: APP_INTERCEPTOR, 
       useClass: ResponseInterceptor 
     },
-    // {
-    //   provide: 'SUPABASE_CLIENT',
-    //   useFactory: (): SupabaseClient =>
-    //     createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY),
-    // },
     {
       // Allowing to do validation through DTO
       // Since class-validator library default throw BadRequestException, here we use exceptionFactory to throw
